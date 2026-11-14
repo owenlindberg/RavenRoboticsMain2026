@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.RavenRobotics;
 
 import com.pedropathing.ivy.Command;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -22,7 +23,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 
-@Autonomous
+@Disabled
 public class TestAuto extends OpMode {
     private Follower follower;
     private final PoseFactory p = PoseFactory.degrees();
