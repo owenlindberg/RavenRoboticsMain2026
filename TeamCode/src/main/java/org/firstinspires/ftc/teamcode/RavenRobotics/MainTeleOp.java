@@ -34,12 +34,12 @@ public class MainTeleOp extends OpMode {
     // poses
     private final PoseFactory pose = PoseFactory.degrees();
     private final Pose start = pose.of(72,72,0);
-    private final Pose end = pose.of(72,72,90);
+    private final Pose end = pose.of(72,72,0);
 
     WaverlyGamepad gp = null;
 
 
-    double shooterPower = 0.55;
+    double shooterPower = 0.525;
 
     @Override
     public void init() {
@@ -62,8 +62,8 @@ public class MainTeleOp extends OpMode {
 
     @Override
     public void start() {
-        limelight.pipelineSwitch(0);
-        limelight.start();
+//        limelight.pipelineSwitch(0);
+//        limelight.start();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class MainTeleOp extends OpMode {
                 DrivePowers fieldCentricPowers = ManualDrive.fieldCentric(
                         -gamepad1.left_stick_y,
                         -gamepad1.left_stick_x,
-                        -gamepad1.right_stick_x,// + (gp.leftTrigger? turnForce : 0),
+                        -gamepad1.right_stick_x + (gp.leftTrigger? turnForce : 0), // make sure domain is [-1,1]
                         follower.pose().heading()
                 );
                 follower.manual(fieldCentricPowers);
@@ -129,7 +129,7 @@ public class MainTeleOp extends OpMode {
                 follower.manual(
                         -gamepad1.left_stick_y,
                         -gamepad1.left_stick_x,
-                        -gamepad1.right_stick_x// + (gp.leftTrigger? turnForce : 0)
+                        -gamepad1.right_stick_x + (gp.leftTrigger? turnForce : 0) // make sure domain is [-1,1]
                 );
             }
         }
@@ -162,20 +162,22 @@ public class MainTeleOp extends OpMode {
             shooter.setVelocity(2000 * shooterPower);
         } else {
             shooter.setPower(0);
-        } if (gp.rightBumperPressed) {
-            shooterPower = Math.round(Math.min(shooterPower+0.05,1));
+        }
+        if (gp.rightBumperPressed) {
+            shooterPower = Math.min(shooterPower+0.025,1);
         } else if (gp.leftBumperPressed) {
-            shooterPower = Math.round(Math.max(shooterPower-0.05,0));
+            shooterPower = Math.max(shooterPower-0.025,0);
         }
 
 
         // telemetry
-        telemetry.addLine("Shooter target speed " + Math.round(shooterPower*100) + "%");
+        telemetry.addLine("Shooter target speed " + Math.round(shooterPower*25*100)/25 + "%");
+        telemetry.addLine("Shooter actual speed: " + shooter.getVelocity()/2000);
         telemetry.addLine("Shooter status: " + ((shooter.getVelocity()/2000)/shooterPower > 0.95? "ready" : "spinning up"));
         telemetry.addLine("");
 //        telemetry.addLine("Limelight angle read is " + result.getTx());
-        telemetry.addLine("Angle read is " + desired);
-        telemetry.addLine("Turn force at " + turnForce);
+//        telemetry.addLine("Angle read is " + desired);
+//        telemetry.addLine("Turn force at " + turnForce);
 
         Pose robotPose = follower.pose();
         telemetry.addLine("\nFollower:");
@@ -202,8 +204,8 @@ public class MainTeleOp extends OpMode {
         telemetry.addLine("Dpad right = toggle field-centric mode");
         telemetry.addLine("Dpad left = toggle hold position");
         telemetry.addLine("Dpad down = toggle intake & ramp direction");
-        telemetry.addLine("left bumper = increase shooter speed");
-        telemetry.addLine("right bumper = decrease shooter speed");
+        telemetry.addLine("left bumper = decrease shooter speed");
+        telemetry.addLine("right bumper = increase shooter speed");
         telemetry.addLine("left trigger = PID");
         telemetry.addLine("right trigger = shoot");
 

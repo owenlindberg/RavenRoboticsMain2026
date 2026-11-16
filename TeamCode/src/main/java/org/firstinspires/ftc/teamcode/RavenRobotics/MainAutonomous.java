@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
-@Autonomous(name = "Main Auto (either side)", group = "Robot")
+@Autonomous(name = "Around the Hive", group = "Robot")
 public class MainAutonomous extends OpMode {
     // hardware
     DcMotorEx ramp;
@@ -33,8 +33,8 @@ public class MainAutonomous extends OpMode {
     // poses
     private final PoseFactory pose = PoseFactory.degrees();
     private final Pose start = pose.of(60, 9, 90);
-    private final Pose path1 = pose.of(5.1275, 104.8927, 90);
-    private final Pose path1Control1 = pose.of(7.3791, 22.5189, 0);
+    private final Pose path1 = pose.of(10, 105, 90);
+    private final Pose path1Control1 = pose.of(19, 40, 0);
 
     public Path Path1() {
         return curve(start, path1Control1, path1).linear(start, path1);
@@ -43,19 +43,19 @@ public class MainAutonomous extends OpMode {
     double timer = 0;
     private final Command shoot = Command.build()
             .setStart(() -> {
-                shooter.setVelocity(2000 * 0.55);
+                shooter.setVelocity(2000 * 0.42);
                 ramp.setPower(0.2);
                 timer = 0;
             })
             .setExecute(() -> {
-                if (shooter.getVelocity() > 2000 * 0.55) {
+                if (shooter.getVelocity() > 2000 * 0.42 * 0.95) {
                     servo.setPosition(0.2);
                     ramp.setPower(0.8);
                     timer++;
                 }
             })
             .setDone(() -> {
-                return timer > 60 * 2;
+                return timer > 60 * 4;
             })
             .setEnd(endCondition -> {
                 servo.setPosition(0);
